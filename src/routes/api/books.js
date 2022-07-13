@@ -1,4 +1,5 @@
 const Book = require("../../entities/book")
+const fileMulter = require("../../middleware/fileMulter")
 const { books } = require("../../store")
 const { Router } = require("express")
 const router = Router()
@@ -20,22 +21,21 @@ router
 
   res.json(books[idx])
 })
-.post('/', function (req, res) {
+.post('/', fileMulter.single('book'), function (req, res) {
   const {
     title,
     description,
     authors,
     favorite,
-    fileCover,
-    fileName,
   } = req.body
   const newBook = new Book(
     title,
     description,
     authors,
     favorite,
-    fileCover,
-    fileName,
+    fileCover = '???',
+    fileName = req.file.originalname,
+    fileBook = req.file.filename,
   )
   books.push(newBook)
   res.json(newBook)
@@ -55,8 +55,6 @@ router
     description,
     authors,
     favorite,
-    fileCover,
-    fileName,
   } = req.body
   books[idx] = {
     ...books[idx],
@@ -64,8 +62,6 @@ router
     description,
     authors,
     favorite,
-    fileCover,
-    fileName,
   }
 
   res.json(books[idx])
@@ -82,6 +78,20 @@ router
 
   books.splice(idx, 1)
   res.send('ok')
+})
+.get('/:id/download', (req, res) => {
+  const { id } = req.params
+  const idx = books.findIndex(el => el.id === id)
+
+  if (idx === -1) {
+    res.status(404)
+    res.send('книга не найдена')
+    return
+  }
+
+  const { fileBook } = books[idx]
+  const file = `public/books/${fileBook}`
+  res.download(file)
 })
 
 module.exports = router
