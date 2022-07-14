@@ -1,6 +1,8 @@
-const Book = require("../../entities/book")
-const fileMulter = require("../../middleware/fileMulter")
-const { books } = require("../../store")
+const Book = reqapp("entities/book")
+const fileMulter = reqapp("middleware/fileMulter")
+const { books } = reqapp("store")
+
+const path = require('path')
 const { Router } = require("express")
 const router = Router()
 
@@ -9,6 +11,7 @@ router
 .get('/', (req, res) => {
   res.json(books)
 })
+
 .get('/:id', (req, res) => {
   const { id } = req.params
   const idx = books.findIndex(el => el.id === id)
@@ -21,6 +24,7 @@ router
 
   res.json(books[idx])
 })
+
 .post('/', fileMulter.single('book'), function (req, res) {
   const {
     title,
@@ -40,6 +44,7 @@ router
   books.push(newBook)
   res.json(newBook)
 })
+
 .put('/:id', (req, res) => {
   const { id } = req.params
   const idx = books.findIndex(el => el.id === id)
@@ -66,6 +71,7 @@ router
 
   res.json(books[idx])
 })
+
 .delete('/:id', function(req, res) {
   const { id } = req.params
   const idx = books.findIndex(el => el.id === id)
@@ -79,6 +85,7 @@ router
   books.splice(idx, 1)
   res.send('ok')
 })
+
 .get('/:id/download', (req, res) => {
   const { id } = req.params
   const idx = books.findIndex(el => el.id === id)
@@ -90,7 +97,7 @@ router
   }
 
   const { fileBook } = books[idx]
-  const file = `public/books/${fileBook}`
+  const file = path.join(process.env.APP_ROOT, 'public', 'books', fileBook)
   res.download(file)
 })
 
