@@ -5,7 +5,7 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
   destination(req, file, cb){
-    const booksPath = path.join(process.env.APP_ROOT, 'public', 'books')
+    const booksPath = path.join(process.env.APP_ROOT, 'storage', 'books')
     if (!fs.existsSync(booksPath)) {
       fs.mkdirSync(booksPath)
     }
