@@ -1,0 +1,27 @@
+<form method="POST">
+  <div class="mb-3">
+    <label for="InputTitle" class="form-label">Название</label>
+    <input type="text" class="form-control" id="InputTitle" value=<%- book.title %>>
+  </div>
+  <div class="mb-3">
+    <label for="InputDescription" class="form-label">Описание</label>
+    <textarea type="text" class="form-control" id="InputDescription" rows="3"><%= book.description %></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="InputAutors" class="form-label">Авторы</label>
+    <input type="text" class="form-control" id="InputAutors" value=<%- book.authors %>>
+  </div>
+  <div class="mb-3">
+    <label for="InputFavorite" class="form-label">Фаворит</label>
+    <input type="text" class="form-control" id="InputFavorite" value=<%- book.favorite %>>
+  </div>
+  <div class="mb-3">
+    <label for="InputFileBook" class="form-label">Книга (файл)</label>
+    <input type="file" class="form-control" id="InputFileBook">
+  </div>
+  <div class="mb-3">
+    <label for="InputFileCover" class="form-label">Обложка (файл картинки)</label>
+    <input type="file" class="form-control" id="InputFileCover">
+  </div>
+  <button type="submit" class="btn btn-primary">Создать</button>
+</form>
