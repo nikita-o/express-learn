@@ -2,7 +2,7 @@
 
 <div class="container">
   <%- include('../../components/nav.ejs') %>
-  <a class="btn btn-primary" href="create" role="button">Добавить книгу</a>
+  <a class="btn btn-primary" href="books/create" role="button">Добавить книгу</a>
   <% if (!books.length) { %>
     <p>No books!</p>
   <% } else { %>
@@ -14,8 +14,8 @@
         <span class="visually-hidden">Toggle Dropdown</span>
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href=<%- id %>>Подробнее</a></li>
-        <li><a class="dropdown-item" href=<%- 'update/' + id %>>Редактировать</a></li>
+        <li><a class="dropdown-item" href=<%- 'books/' + id %>>Подробнее</a></li>
+        <li><a class="dropdown-item" href=<%- 'books/update/' + id %>>Редактировать</a></li>
       </ul>
     </div>
   <% })} %>

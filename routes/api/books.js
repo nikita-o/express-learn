@@ -32,14 +32,18 @@ router
     authors,
     favorite,
   } = req.body
+  const fileCover = req.files.cover ? req.files.cover[0].filename : null
+  const fileName = req.files.book ? req.files.book[0].originalname : null
+  const fileBook = req.files.book ? req.files.book[0].filename : null
+
   const newBook = new Book(
     title,
     description,
     authors,
     favorite,
-    fileCover = '???',
-    fileName = req.file.originalname,
-    fileBook = req.file.filename,
+    fileCover,
+    fileName,
+    fileBook,
   )
   books.push(newBook)
   res.json(newBook)
@@ -61,6 +65,7 @@ router
     authors,
     favorite,
   } = req.body
+
   books[idx] = {
     ...books[idx],
     title,

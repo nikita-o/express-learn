@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const { books } = reqapp("store")
+const Book = reqapp("entities/book")
+const fileMulter = reqapp("middleware/fileMulter")
 
 router
 .get('/', (req, res) => {
@@ -19,8 +21,27 @@ router
     book: {},
   });
 })
-.post('/books/create', (req, res) => {
-  console.log(req.body);
+.post('/books/create', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
+  const {
+    title,
+    description,
+    authors,
+    favorite,
+  } = req.body
+  const fileCover = req.files.cover ? req.files.cover[0].filename : null
+  const fileName = req.files.book ? req.files.book[0].originalname : null
+  const fileBook = req.files.book ? req.files.book[0].filename : null
+
+  const newBook = new Book(
+    title,
+    description,
+    authors,
+    favorite,
+    fileCover,
+    fileName,
+    fileBook,
+  )
+  books.push(newBook)
   res.redirect('/');
 })
 .get('/books/update/:id', (req, res) => {
@@ -31,7 +52,31 @@ router
     book: books[idx],
   });
 })
-.post('/books/update/:id', (req, res) => {
+.post('/books/update/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
+  const { id } = req.params
+  const idx = books.findIndex(el => el.id === id)
+
+  if (idx === -1) {
+    res.status(404)
+    res.send('книга не найдена')
+    return
+  }
+
+  const {
+    title,
+    description,
+    authors,
+    favorite,
+  } = req.body
+
+  books[idx] = {
+    ...books[idx],
+    title,
+    description,
+    authors,
+    favorite,
+  }
+
   res.redirect('/');
 })
 .get('/books/:id', (req, res) => {
