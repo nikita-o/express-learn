@@ -1,0 +1,22 @@
+<%- include('../../layouts/layoutStart.ejs', {title: title}) %>
+
+<div class="container">
+  <%- include('../../components/nav.ejs') %>
+  <div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src=<%- '/storage/' + book.fileCover %> class="img-fluid rounded-start">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">Название: <%= book.title ? book.title : 'отсутсвует' %></h5>
+          <p class="card-text">Описание: <%= book.description ? book.description : 'отсутсвует' %></p>
+          <p class="card-text">Авторы: <%= book.authors ? book.authors : 'отсутсвует' %></p>
+          <a class="btn btn-primary" href=<%- '/storage/' + book.fileBook %> download=<%- book.fileName %> >Скачать</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../layouts/layoutEnd.ejs') %>
