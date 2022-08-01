@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 
 require('dotenv').config()
+// Кринжовый (а может нет) require где указывается путь относительно корня проекта
 global.reqapp = (modulePath) => require(path.join(process.env.APP_ROOT, modulePath))
 
 const userRouter = reqapp('routes/api/user')

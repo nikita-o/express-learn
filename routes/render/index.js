@@ -7,20 +7,24 @@ const fileMulter = reqapp("middleware/fileMulter")
 
 router
 .get('/', (req, res) => {
+  // Пока что redirect, вдруг на главном роуте что то сделаю
   res.redirect('/books')
 })
+
 .get('/books', (req, res) => {
   res.render('templates/books/index', {
     title: 'index',
     books
   })
 })
+
 .get('/books/create', (req, res) => {
   res.render('templates/books/create', {
     title: 'create',
     book: {},
   })
 })
+
 .post('/books/create', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
   const {
     title,
@@ -44,6 +48,7 @@ router
   books.push(newBook)
   res.redirect('/')
 })
+
 .get('/books/update/:id', (req, res) => {
   const {id} = req.params
   const idx = books.findIndex(el => el.id === id)
@@ -52,6 +57,7 @@ router
     book: books[idx],
   })
 })
+
 .post('/books/update/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
   const { id } = req.params
   const idx = books.findIndex(el => el.id === id)
@@ -83,6 +89,7 @@ router
 
   res.redirect('/')
 })
+
 .get('/books/:id', (req, res) => {
   const {id} = req.params
   const idx = books.findIndex(el => el.id === id)
