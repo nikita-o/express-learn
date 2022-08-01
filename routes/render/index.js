@@ -1,5 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
 const { books } = reqapp("store")
 const Book = reqapp("entities/book")
@@ -7,19 +7,19 @@ const fileMulter = reqapp("middleware/fileMulter")
 
 router
 .get('/', (req, res) => {
-  res.redirect('/books');
+  res.redirect('/books')
 })
 .get('/books', (req, res) => {
   res.render('templates/books/index', {
     title: 'index',
     books
-  });
+  })
 })
 .get('/books/create', (req, res) => {
   res.render('templates/books/create', {
     title: 'create',
     book: {},
-  });
+  })
 })
 .post('/books/create', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
   const {
@@ -42,15 +42,15 @@ router
     fileBook,
   )
   books.push(newBook)
-  res.redirect('/');
+  res.redirect('/')
 })
 .get('/books/update/:id', (req, res) => {
-  const {id} = req.params;
-  const idx = books.findIndex(el => el.id === id);
+  const {id} = req.params
+  const idx = books.findIndex(el => el.id === id)
   res.render('templates/books/create', {
     title: 'update',
     book: books[idx],
-  });
+  })
 })
 .post('/books/update/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
   const { id } = req.params
@@ -81,15 +81,15 @@ router
   books[idx].fileName = req.files.cover ? req.files.cover[0].originalname : books[idx].fileName
   books[idx].fileBook = req.files.cover ? req.files.cover[0].filename : books[idx].fileBook
 
-  res.redirect('/');
+  res.redirect('/')
 })
 .get('/books/:id', (req, res) => {
-  const {id} = req.params;
-  const idx = books.findIndex(el => el.id === id);
+  const {id} = req.params
+  const idx = books.findIndex(el => el.id === id)
   res.render('templates/books/view', {
     title: 'view',
     book: books[idx],
-  });
-});
+  })
+})
 
-module.exports = router;
+module.exports = router
