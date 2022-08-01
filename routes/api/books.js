@@ -25,7 +25,7 @@ router
   res.json(books[idx])
 })
 
-.post('/', fileMulter.single('book'), function (req, res) {
+.post('/', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), function (req, res) {
   const {
     title,
     description,
@@ -49,7 +49,7 @@ router
   res.json(newBook)
 })
 
-.put('/:id', (req, res) => {
+.put('/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
   const { id } = req.params
   const idx = books.findIndex(el => el.id === id)
 
@@ -73,6 +73,10 @@ router
     authors,
     favorite,
   }
+
+  books[idx].fileCover = req.files.cover ? req.files.cover[0].filename : books[idx].fileCover
+  books[idx].fileName = req.files.cover ? req.files.cover[0].originalname : books[idx].fileName
+  books[idx].fileBook = req.files.cover ? req.files.cover[0].filename : books[idx].fileBook
 
   res.json(books[idx])
 })

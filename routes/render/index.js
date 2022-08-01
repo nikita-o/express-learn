@@ -77,6 +77,10 @@ router
     favorite,
   }
 
+  books[idx].fileCover = req.files.cover ? req.files.cover[0].filename : books[idx].fileCover
+  books[idx].fileName = req.files.cover ? req.files.cover[0].originalname : books[idx].fileName
+  books[idx].fileBook = req.files.cover ? req.files.cover[0].filename : books[idx].fileBook
+
   res.redirect('/');
 })
 .get('/books/:id', (req, res) => {
