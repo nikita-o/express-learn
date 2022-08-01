@@ -1,24 +1,7 @@
 <%- include('./layouts/layoutStart.ejs', {title: title}) %>
 
 <div class="container">
-  <%- include('./components/nav.ejs') %>
-  <a class="btn btn-primary" href="books/create" role="button">Добавить книгу</a>
-  <% if (!books.length) { %>
-    <p>No books!</p>
-  <% } else { %>
-    <p>books:</p>
-  <% books.forEach( ({title, id}) => { %>
-    <div class="input-group mb-3">
-      <input type="text" class="form-control" aria-describedby="button-addon2" value=<%- title %> disabled readonly>
-      <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="visually-hidden">Toggle Dropdown</span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href=<%- 'books/' + id %>>Подробнее</a></li>
-        <li><a class="dropdown-item" href=<%- 'books/update/' + id %>>Редактировать</a></li>
-      </ul>
-    </div>
-  <% })} %>
+  <p>TEST</p>
 </div>
 
 <%- include('./layouts/layoutEnd.ejs') %>

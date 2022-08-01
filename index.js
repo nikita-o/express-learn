@@ -3,8 +3,7 @@ const fs = require('fs')
 const path = require('path')
 
 require('dotenv').config()
-global.reqapp = (modulePath) =>
-  require(path.join(process.env.APP_ROOT, modulePath))
+global.reqapp = (modulePath) => require(path.join(process.env.APP_ROOT, modulePath))
 
 const userRouter = reqapp('routes/api/user')
 const booksRouter = reqapp('routes/api/books')

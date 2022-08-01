@@ -1,17 +1,24 @@
-<%- include('./layouts/layoutStart.ejs', {title: title}) %>
-<%- include('./components/nav.ejs') %>
+<%- include('../../layouts/layoutStart.ejs', {title: title}) %>
 
 <div class="container">
-  <% books.forEach( ({title}) => { %>
-    <div class="card">
-      <h5 class="card-header"> <%= title %> </h5>
-      <div class="card-body">
-        <h5 class="card-title">Special title treatment</h5>
-        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
+  <%- include('../../components/nav.ejs') %>
+  <a class="btn btn-primary" href="create" role="button">Добавить книгу</a>
+  <% if (!books.length) { %>
+    <p>No books!</p>
+  <% } else { %>
+    <p>books:</p>
+  <% books.forEach( ({title, id}) => { %>
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" aria-describedby="button-addon2" value=<%- title %> disabled readonly>
+      <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="visually-hidden">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href=<%- id %>>Подробнее</a></li>
+        <li><a class="dropdown-item" href=<%- 'update/' + id %>>Редактировать</a></li>
+      </ul>
     </div>
-  <% }) %>
+  <% })} %>
 </div>
 
-<%- include('./layouts/layoutEnd.ejs') %>
+<%- include('../../layouts/layoutEnd.ejs') %>

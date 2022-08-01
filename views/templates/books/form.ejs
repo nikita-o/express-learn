@@ -1,27 +1,27 @@
-<form method="POST">
-  <div class="mb-3">
+<form method="post">
+  <div class="form-group">
     <label for="InputTitle" class="form-label">Название</label>
-    <input type="text" class="form-control" id="InputTitle" value=<%- book.title %>>
+    <input type="text" class="form-control" id="InputTitle" name="title" value=<%- book.title %>>
   </div>
-  <div class="mb-3">
+  <div class="form-group">
     <label for="InputDescription" class="form-label">Описание</label>
-    <textarea type="text" class="form-control" id="InputDescription" rows="3"><%= book.description %></textarea>
+    <textarea type="text" class="form-control" id="InputDescription" rows="3" name="description"><%= book.description %></textarea>
   </div>
-  <div class="mb-3">
+  <div class="form-group">
     <label for="InputAutors" class="form-label">Авторы</label>
-    <input type="text" class="form-control" id="InputAutors" value=<%- book.authors %>>
+    <input type="text" class="form-control" id="InputAutors" name="authors" value=<%- book.authors %>>
   </div>
-  <div class="mb-3">
+  <div class="form-group">
     <label for="InputFavorite" class="form-label">Фаворит</label>
-    <input type="text" class="form-control" id="InputFavorite" value=<%- book.favorite %>>
+    <input type="text" class="form-control" id="InputFavorite" name="favorite" value=<%- book.favorite %>>
   </div>
-  <div class="mb-3">
+  <div class="form-group">
     <label for="InputFileBook" class="form-label">Книга (файл)</label>
-    <input type="file" class="form-control" id="InputFileBook">
+    <input type="file" class="form-control" id="InputFileBook" name="fileName">
   </div>
-  <div class="mb-3">
+  <div class="form-group">
     <label for="InputFileCover" class="form-label">Обложка (файл картинки)</label>
-    <input type="file" class="form-control" id="InputFileCover">
+    <input type="file" class="form-control" id="InputFileCover" name="fileCover">
   </div>
   <button type="submit" class="btn btn-primary">Создать</button>
 </form>

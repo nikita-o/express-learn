@@ -5,7 +5,10 @@ const { books } = reqapp("store")
 
 router
 .get('/', (req, res) => {
-  res.render('index', {
+  res.redirect('/books');
+})
+.get('/books', (req, res) => {
+  res.render('templates/books/index', {
     title: 'index',
     books
   });
@@ -17,6 +20,7 @@ router
   });
 })
 .post('/books/create', (req, res) => {
+  console.log(req.body);
   res.redirect('/');
 })
 .get('/books/update/:id', (req, res) => {
