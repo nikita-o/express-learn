@@ -4,7 +4,7 @@ const path = require('path')
 
 require('dotenv').config()
 // Кринжовый (а может нет) require где указывается путь относительно корня проекта
-global.reqapp = (modulePath) => require(path.join(process.env.APP_ROOT, modulePath))
+global.reqapp = (modulePath) => require(path.join(process.env.APP_ROOT, 'src', modulePath))
 
 const userRouter = reqapp('routes/api/user')
 const booksRouter = reqapp('routes/api/books')
@@ -20,6 +20,7 @@ const app = express()
 
 app.use(express.urlencoded({extended: true}))
 app.set("view engine", "ejs")
+app.set('views', path.join(process.env.APP_ROOT, 'src', 'views'))
 
 app.use('/storage', express.static('storage'))
 

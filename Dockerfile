@@ -4,7 +4,8 @@ WORKDIR /app
 
 ENV APP_ROOT=/app
 
-COPY . .
+COPY ./package.json .
 RUN npm i
+COPY ./src .
 
 CMD [ "npm", "run", "start" ]
