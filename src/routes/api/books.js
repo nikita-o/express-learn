@@ -1,10 +1,8 @@
 const Book = reqapp("entities/book")
 const fileMulter = reqapp("middleware/fileMulter")
 const { books } = reqapp("store")
-const { urlCounter } = reqapp("config")
 
 const path = require('path')
-const axios = require('axios').default;
 const { Router } = require("express")
 
 const router = Router()
@@ -23,14 +21,6 @@ router
     res.send('книга не найдена')
     return
   }
-
-  axios.post(urlCounter + `/counter/${id}/incr`)
-  .then((data) => {
-    console.log(data);
-  })
-  .catch((err) => {
-    console.error(err);
-  })
 
   res.json(books[idx])
 })
