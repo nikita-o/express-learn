@@ -1,9 +1,11 @@
+const axios = require('axios').default;
 const express = require('express')
 const router = express.Router()
 
 const { books } = reqapp("store")
 const Book = reqapp("entities/book")
 const fileMulter = reqapp("middleware/fileMulter")
+const { urlCounter } = reqapp("config")
 
 router
 .get('/', (req, res) => {
@@ -93,6 +95,15 @@ router
 .get('/books/:id', (req, res) => {
   const {id} = req.params
   const idx = books.findIndex(el => el.id === id)
+
+  axios.post(urlCounter +`/counter/${id}/incr`)
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+    console.error(err);
+  })
+
   res.render('templates/books/view', {
     title: 'view',
     book: books[idx],
