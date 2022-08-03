@@ -1,31 +1,32 @@
+const axios = require('axios').default;
+const express = require('express')
+const router = express.Router()
+
+const { books } = reqapp("store")
 const Book = reqapp("entities/book")
 const fileMulter = reqapp("middleware/fileMulter")
-const { books } = reqapp("store")
-
-const path = require('path')
-const { Router } = require("express")
-const router = Router()
-
 
 router
 .get('/', (req, res) => {
-  res.json(books)
+  // Пока что redirect, вдруг на главном роуте что то сделаю
+  res.redirect('/books')
 })
 
-.get('/:id', (req, res) => {
-  const { id } = req.params
-  const idx = books.findIndex(el => el.id === id)
-
-  if (idx === -1) {
-    res.status(404)
-    res.send('книга не найдена')
-    return
-  }
-
-  res.json(books[idx])
+.get('/books', (req, res) => {
+  res.render('templates/books/index', {
+    title: 'index',
+    books
+  })
 })
 
-.post('/', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), function (req, res) {
+.get('/books/create', (req, res) => {
+  res.render('templates/books/create', {
+    title: 'create',
+    book: {},
+  })
+})
+
+.post('/books/create', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
   const {
     title,
     description,
@@ -46,10 +47,19 @@ router
     fileBook,
   )
   books.push(newBook)
-  res.json(newBook)
+  res.redirect('/')
 })
 
-.put('/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
+.get('/books/update/:id', (req, res) => {
+  const {id} = req.params
+  const idx = books.findIndex(el => el.id === id)
+  res.render('templates/books/create', {
+    title: 'update',
+    book: books[idx],
+  })
+})
+
+.post('/books/update/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
   const { id } = req.params
   const idx = books.findIndex(el => el.id === id)
 
@@ -78,36 +88,17 @@ router
   books[idx].fileName = req.files.cover ? req.files.cover[0].originalname : books[idx].fileName
   books[idx].fileBook = req.files.cover ? req.files.cover[0].filename : books[idx].fileBook
 
-  res.json(books[idx])
+  res.redirect('/')
 })
 
-.delete('/:id', function(req, res) {
-  const { id } = req.params
+.get('/books/:id', (req, res) => {
+  const {id} = req.params
   const idx = books.findIndex(el => el.id === id)
 
-  if (idx === -1) {
-    res.status(404)
-    res.send('книга не найдена')
-    return
-  }
-
-  books.splice(idx, 1)
-  res.send('ok')
-})
-
-.get('/:id/download', (req, res) => {
-  const { id } = req.params
-  const idx = books.findIndex(el => el.id === id)
-
-  if (idx === -1) {
-    res.status(404)
-    res.send('книга не найдена')
-    return
-  }
-
-  const { fileBook } = books[idx]
-  const file = path.join(process.env.APP_ROOT, 'public', 'books', fileBook)
-  res.download(file)
+  res.render('templates/books/view', {
+    title: 'view',
+    book: books[idx],
+  })
 })
 
 module.exports = router
