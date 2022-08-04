@@ -1,6 +1,5 @@
-const Book = reqapp("entities/book")
 const fileMulter = reqapp("middleware/fileMulter")
-const { books } = reqapp("store")
+const Book = reqapp("models/book")
 
 const path = require('path')
 const { Router } = require("express")
@@ -8,57 +7,57 @@ const { Router } = require("express")
 const router = Router()
 
 router
-.get('/', (req, res) => {
-  res.json(books)
-})
-
-.get('/:id', (req, res) => {
-  const { id } = req.params
-  const idx = books.findIndex(el => el.id === id)
-
-  if (idx === -1) {
-    res.status(404)
-    res.send('книга не найдена')
-    return
+.get('/', async (req, res) => {
+  try {
+    const books = await Book.find().select('-__v')
+    res.json(books)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error)
   }
-
-  res.json(books[idx])
 })
 
-.post('/', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), function (req, res) {
+.get('/:id', async (req, res) => {
+  const { id } = req.params
+  try {
+    const book = await Book.findById(id).select('-__v')
+    res.json(book)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error)
+  }
+})
+
+.post('/', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), async function (req, res) {
   const {
     title,
     description,
     authors,
-    favorite,
   } = req.body
   const fileCover = req.files.cover ? req.files.cover[0].filename : null
   const fileName = req.files.book ? req.files.book[0].originalname : null
   const fileBook = req.files.book ? req.files.book[0].filename : null
 
-  const newBook = new Book(
+  const newBook = new Book({
     title,
     description,
     authors,
-    favorite,
     fileCover,
     fileName,
     fileBook,
-  )
-  books.push(newBook)
-  res.json(newBook)
+  })
+
+  try {
+    await newBook.save()
+    res.json(newBook)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error)
+  }
 })
 
-.put('/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), (req, res) => {
+.put('/:id', fileMulter.fields([{name: 'book'}, {name: 'cover'}]), async (req, res) => {
   const { id } = req.params
-  const idx = books.findIndex(el => el.id === id)
-
-  if (idx === -1) {
-    res.status(404)
-    res.send('книга не найдена')
-    return
-  }
-
   const {
     title,
     description,
@@ -66,48 +65,50 @@ router
     favorite,
   } = req.body
 
-  books[idx] = {
-    ...books[idx],
+  data = {
     title,
     description,
     authors,
     favorite,
   }
-
-  books[idx].fileCover = req.files.cover ? req.files.cover[0].filename : books[idx].fileCover
-  books[idx].fileName = req.files.cover ? req.files.cover[0].originalname : books[idx].fileName
-  books[idx].fileBook = req.files.cover ? req.files.cover[0].filename : books[idx].fileBook
-
-  res.json(books[idx])
-})
-
-.delete('/:id', function(req, res) {
-  const { id } = req.params
-  const idx = books.findIndex(el => el.id === id)
-
-  if (idx === -1) {
-    res.status(404)
-    res.send('книга не найдена')
-    return
+  if (req.files.cover) {
+    data.fileCover = req.files.cover[0].filename
+  }
+  if (req.files.book) {
+    data.fileName = req.files.book[0].originalname
+    data.fileBook = req.files.book[0].filename
   }
 
-  books.splice(idx, 1)
-  res.send('ok')
+  try {
+    await Book.findByIdAndUpdate(id, data)
+    res.redirect(`/api/books/${id}`)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error)
+  }
 })
 
-.get('/:id/download', (req, res) => {
+.delete('/:id', async function(req, res) {
   const { id } = req.params
-  const idx = books.findIndex(el => el.id === id)
-
-  if (idx === -1) {
-    res.status(404)
-    res.send('книга не найдена')
-    return
+  try {
+    await Book.deleteOne({_id: id})
+    res.json(true)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error)
   }
+})
 
-  const { fileBook } = books[idx]
-  const file = path.join(process.env.APP_ROOT, 'public', 'books', fileBook)
-  res.download(file)
+.get('/:id/download', async (req, res) => {
+  const { id } = req.params
+  try {
+    const fileBook = await Book.findById(id).select('fileBook')
+    const file = path.join(process.env.APP_ROOT, 'public', 'books', fileBook)
+    res.download(file)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error)
+  }
 })
 
 module.exports = router
