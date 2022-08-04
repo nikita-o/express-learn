@@ -1,4 +1,5 @@
 const express = require('express')
+const session = require('express-session')
 const fs = require('fs')
 const path = require('path')
 const mongoose = require('mongoose');
@@ -12,6 +13,7 @@ const userRouter = reqapp('routes/api/user')
 const booksRouter = reqapp('routes/api/books')
 const indexRouter = require('./routes/render/index')
 const error404 = reqapp('middleware/error404')
+const passport = reqapp('middleware/passport')
 
 const publicPath = path.join(process.env.APP_ROOT, 'storage')
 if (!fs.existsSync(publicPath)) {
@@ -21,13 +23,17 @@ if (!fs.existsSync(publicPath)) {
 const app = express()
 
 app.use(express.urlencoded({extended: true}))
+app.use(session({ secret: 'SECRET'}));
+
 app.set("view engine", "ejs")
 app.set('views', path.join(process.env.APP_ROOT, 'src', 'views'))
 
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 app.use('/storage', express.static('storage'))
-
 app.use('/', indexRouter)
-
 app.use('/api/user', userRouter)
 app.use('/api/books', booksRouter)
 app.use(error404)
