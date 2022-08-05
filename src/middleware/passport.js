@@ -4,13 +4,21 @@ const LocalStrategy = require('passport-local').Strategy
 const User = reqapp('models/user')
 
 const verify = async (username, password, done) => {
+  console.log(123);
   try {
-    const user = await User.find({
+    const user = await User.findOne({
       username,
     })
-    if (!user) return done(null, false)
+    console.log(user);
+    if (!user) {
+      console.error('user no found');
+      return done(null, false)
+    }
 
-    if (user.password !== password) return done(null, false)
+    if (user.password !== password) {
+      console.error('incorrect password');
+      return done(null, false)
+    }
 
     return done(null, user)
   } catch (error) {
@@ -24,7 +32,7 @@ const options = {
   passwordField: "password",
 }
 
-passport.use('local', new LocalStrategy(options, verify))
+passport.use(new LocalStrategy(options, verify));
 
 passport.serializeUser((user, cb) => {
   cb(null, user.id)

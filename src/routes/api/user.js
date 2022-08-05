@@ -4,15 +4,14 @@ const passport = reqapp('middleware/passport')
 const User = reqapp('models/user')
 
 router
-.post('/login', 
+.post('/login',
 passport.authenticate('local'),
 (req, res) => {
   res.status(201)
   res.json({ id: 1, mail: "test@mail.ru" })
 })
 
-.post('/signup', 
-passport.authenticate('local'),
+.post('/signup',
 async (req, res) => {
   const {
     username,

@@ -22,7 +22,7 @@ if (!fs.existsSync(publicPath)) {
 
 const app = express()
 
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded())
 app.use(session({ secret: 'SECRET'}));
 
 app.set("view engine", "ejs")
