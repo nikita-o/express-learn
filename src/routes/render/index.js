@@ -2,6 +2,7 @@ const axios = require('axios').default;
 const express = require('express')
 const router = express.Router()
 
+const message = reqapp("models/message")
 const Book = reqapp("models/book")
 const fileMulter = reqapp("middleware/fileMulter")
 const passport = reqapp('middleware/passport')
@@ -115,9 +116,11 @@ router
   
   try {
     const book = await Book.findById(id).select('-__v')
+    const messages = await message.find({bookId: id}).select('-__v');
     res.render('templates/books/view', {
       title: 'view',
       book,
+      messages,
     })
   } catch (error) {
     console.error(error);
