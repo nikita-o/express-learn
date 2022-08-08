@@ -34,8 +34,14 @@ async (req, res) => {
   }
 })
 
-.get('/me', (req, res) => {
-  res.send('GET request to the homepage')
+.get('/me', (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    return res.status(400).send('you is not authenticated')
+  }
+  next()
+},
+(req, res) => {
+  res.json({ user: req.user })
 })
 
 module.exports = router

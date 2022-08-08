@@ -4,7 +4,6 @@ const LocalStrategy = require('passport-local').Strategy
 const User = reqapp('models/user')
 
 const verify = async (username, password, done) => {
-  console.log(123);
   try {
     const user = await User.findOne({
       username,
@@ -35,7 +34,7 @@ const options = {
 passport.use(new LocalStrategy(options, verify));
 
 passport.serializeUser((user, cb) => {
-  cb(null, user.id)
+  cb(null, user._id)
 })
 
 passport.deserializeUser( async (id, cb) => {

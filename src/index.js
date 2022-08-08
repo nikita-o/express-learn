@@ -41,7 +41,7 @@ app.use(error404)
 async function start() {
   try {
     await mongoose.connect(URL_MONGO)
-    app.listen(PORT, () => console.log('Im a live!'))
+    app.listen(PORT, () => console.log(`Im a live! \n(PORT: ${PORT})`))
   } catch (e) {
     console.error(e)
   }

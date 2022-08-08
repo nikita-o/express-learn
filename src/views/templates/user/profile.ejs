@@ -1,0 +1,12 @@
+<%- include('../../layouts/layoutStart.ejs', {title: title}) %>
+
+<div class="container">
+  <%- include('../../components/nav.ejs') %>
+
+  <p>ID: <%= user._id %></p>
+  <p>Email: <%= user.email %></p>
+  <p>Username: <%= user.username %></p>
+
+</div>
+
+<%- include('../../layouts/layoutEnd.ejs') %>

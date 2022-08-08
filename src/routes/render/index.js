@@ -4,6 +4,8 @@ const router = express.Router()
 
 const Book = reqapp("models/book")
 const fileMulter = reqapp("middleware/fileMulter")
+const passport = reqapp('middleware/passport')
+const User = reqapp('models/user')
 
 router
 .get('/', (req, res) => {
@@ -122,5 +124,57 @@ router
     res.status(500).json(error)
   }
 })
+
+.get('/user/login', (req, res) => {
+  res.render('templates/user/login', {
+    title: 'login',
+  })
+})
+.post('/user/login',
+passport.authenticate('local', { failureRedirect: '/user/login' }),
+(req, res) => {
+  res.redirect('/')
+})
+.get('/user/profile',
+(req, res, next) => {
+  if (!req.isAuthenticated()) {
+    return res.status(400).send('you is not authenticated')
+  }
+  next()
+},
+(req, res) => {
+  res.render('templates/user/profile', {
+    title: 'profile',
+    user: req.user
+  })
+})
+.get('/user/signup', (req, res) => {
+  res.render('templates/user/signup', {
+    title: 'signup',
+  })
+})
+.post('/user/signup',
+async (req, res) => {
+  const {
+    username,
+    password,
+    email,
+  } = req.body
+
+  const user = new User({
+    username,
+    password,
+    email,
+  })
+
+  try {
+    await user.save()
+    res.redirect('/')
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error)
+  }
+})
+
 
 module.exports = router
