@@ -7,29 +7,32 @@ module.exports = (httpServer) => {
   });
 
   io.on('connection', (socket) => {
-  const {id} = socket;
-  console.log(`Socket connected: ${id}`);
+    const {id} = socket;
+    console.log(`Socket connected: ${id}`);
 
-  socket.on('comment', async (msg) => {
-    const newMessage = new MessageModel({
-      author: msg.username,
-      message: msg.text,
-      bookId: msg.bookId,
-      date: new Date(),
+    const {bookId} = socket.handshake.query;
+    console.log(`Socket book: ${bookId}`);
+    socket.join(bookId);
+
+    socket.on('comment', async (msg) => {
+      const newMessage = new message({
+        author: msg.author,
+        message: msg.message,
+        bookId: bookId,
+        date: new Date(),
+      });
+
+      try {
+        await newMessage.save();
+      } catch (e) {
+        console.error(e);
+      }
+      
+      socket.emit('comment', newMessage);
+    })
+
+    socket.on('disconnect', () => {
+      console.log(`Socket disconnected: ${id}`);
     });
-
-    try {
-      await newMessage.save();
-    } catch (e) {
-      console.error(e);
-    }
-
-    socket.to(bookId).emit('comment', msg);
-    socket.emit('comment', msg);
-  })
-
-  socket.on('disconnect', () => {
-    console.log(`Socket disconnected: ${id}`);
-  });
   })
 }

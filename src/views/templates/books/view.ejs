@@ -18,19 +18,19 @@
     </div>
   </div>
 
+  <h3> Комментарии: </h3>
+  <div id="listComments">
   <% if (messages.length) { %>
-    <h3> Комментарии: </h3>
-    <% books.forEach( ({autor, date, message}) => { %>
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title"> <%= autor %> </h5>
-        <h6 class="card-subtitle mb-2 text-muted"><%= date %></h6>
-        <p class="card-text"><%= message %></p>
+    <% messages.forEach( ({author, date, message}) => { %>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"> <%= author %> </h5>
+          <h6 class="card-subtitle mb-2 text-muted"><%= date %></h6>
+          <p class="card-text"><%= message %></p>
+        </div>
       </div>
+      <% })} %>
     </div>
-  <% })} else { %>
-    <p>Комментов пока нет</p>
-  <% }%>
 
   <div class="row">
     <div class="col-4">
@@ -39,42 +39,49 @@
             <input
                     placeholder="username"
                     type="text"
-                    id="username"
+                    id="author"
                     class="form-control"
             >
         </div>
         <div class="form-group">
-            <label for="text">message</label>
+            <label for="message">message</label>
             <textarea
                     placeholder="message"
                     class="form-control"
-                    id="text"
+                    id="message"
             ></textarea>
         </div>
         <button type="submit" id="send" class="btn btn-primary">Send</button>
    </div>
   </div>
-
 </div>
 
+<script type="module">
+  import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
+  const bookId = '<%-book._id%>'; // How it work?...
 
-<script src="/socket.io/socket.io.js"></script>
+  const socket = io.connect('/', {query: `bookId=${bookId}`});
 
-<script>
-  const socket = io.connect('/', {query: `bookId=${bookId}`}, (err) => {
-    if (err) { console.log(err); }
-    console.log('connect');
-  });
-
+  const listComments = document.querySelector('#listComments');
   socket.on('comment', (msg) => {
-    const div = getTmp(msg)
-    boxList.insertAdjacentHTML('beforeend', div)
+    listComments.insertAdjacentHTML('beforeend', `
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"> ${msg.author} </h5>
+          <h6 class="card-subtitle mb-2 text-muted"> ${msg.date} </h6>
+          <p class="card-text"> ${msg.message} </p>
+        </div>
+      </div>
+    `);
   });
 
+  const inputUsername = document.querySelector('#author');
+  const inputText = document.querySelector('#message');
+  const send = document.querySelector('#send');
   send.addEventListener('click', () => {
-    socket.emit('comments', {
-      username: inputUsername.value,
-      text: inputText.value,
+    socket.emit('comment', {
+      author: inputUsername.value,
+      message: inputText.value,
     })
   })
 </script>
